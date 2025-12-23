@@ -1,19 +1,41 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OrysysLoanApplication.DataAccess;
 using OrysysLoanApplication.Models;
+using System.Diagnostics;
 
 namespace OrysysLoanApplication.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
-        public IActionResult Index()
+
+        private readonly DataAccessLoanApplication _data;
+        private readonly ILogger<LoginController> _logger;
+
+        public HomeController(DataAccessLoanApplication data, ILogger<LoginController> logger)
         {
-            return View();
+            _data = data;
+            _logger = logger;
         }
 
-        public IActionResult Privacy()
+        public IActionResult Index()
+        {
+            List<LoanApplicationModel> loanApplications = new List<LoanApplicationModel>();
+            try
+            {
+                 loanApplications = _data.GetAllLoanApplication();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error in : " + ex.Message);
+                TempData["ErrorMessage"] = "An error occurred while fetching loan types." + ex.Message;
+            }  
+            return View(loanApplications);
+        }
+
+
+        public IActionResult Create()
         {
             return View();
         }

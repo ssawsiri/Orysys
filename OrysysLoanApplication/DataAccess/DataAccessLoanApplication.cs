@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
+using OrysysLoanApplication.Models;
 using System.Data;
 using System.Reflection;
 
@@ -56,6 +57,68 @@ namespace OrysysLoanApplication.DataAccess
                     _connection.Close();
                 }
             }
+        }
+
+        public List<LoanTypesModel> GetLoanType()
+        {
+            List<LoanTypesModel> loanTypes = new List<LoanTypesModel>();
+            using (_connection = new SqlConnection(GetConnectionString()))
+            {
+                using (_command = new SqlCommand("USP_GetLoanTypes", _connection))
+                {
+                    _command.CommandType = CommandType.StoredProcedure;
+                    _connection.Open();
+                    using (SqlDataReader reader = _command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            LoanTypesModel loanType = new LoanTypesModel
+                            {
+                                LoanTypeid = Convert.ToInt32(reader["TypeId"]),
+                                LoanTypeName = reader["TypeName"].ToString(),
+                                InterestRate = Convert.ToDouble(reader["InterestRate"])
+                            };
+                            loanTypes.Add(loanType);
+                        }
+                    }
+                    _connection.Close();
+                }
+            }
+            return loanTypes;
+        }
+
+        public List<LoanApplicationModel> GetAllLoanApplication()
+        {
+            List<LoanApplicationModel> loanApplications = new List<LoanApplicationModel>();
+            using (_connection = new SqlConnection(GetConnectionString()))
+            {
+                using (_command = new SqlCommand("USP_GetAllLoanApplication", _connection))
+                {
+                    _command.CommandType = CommandType.StoredProcedure;
+                    _connection.Open();
+                    using (SqlDataReader reader = _command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            LoanApplicationModel loanapplication = new LoanApplicationModel
+                            {
+                                LoanID = Convert.ToInt32(reader["LoanId"]),
+                                CustomerName = reader["CustomerName"].ToString(),
+                                LoanTypeID = Convert.ToInt32(reader["LoanTypeId"]),
+                                LoanTypeName = reader["TypeName"].ToString(),
+                                InterestRate = Convert.ToDecimal(reader["InterestRate"]),
+                                LoanAmount = Convert.ToDecimal(reader["LoanAmount"]),
+                                RegisteredDate = Convert.ToDateTime(reader["RegisteredDate"]),
+                                Duration = Convert.ToInt32(reader["Duration"]),
+                                Status = reader["Status"].ToString(),
+                            };
+                            loanApplications.Add(loanapplication);
+                        }
+                    }
+                    _connection.Close();
+                }
+            }
+            return loanApplications;
         }
     }
 }
