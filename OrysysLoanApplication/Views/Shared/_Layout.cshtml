@@ -37,6 +37,14 @@
         </main>
     </div>
 
+    <div class="container">
+        <main role="main" class="pb-3">
+            <partial name="_Notifications" />
+            @RenderBody()
+        </main>
+    </div>
+
+
    @*  <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2025 - OrysysLoanApplication - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -47,6 +55,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 
+   
     <script>
         (function () {
 
