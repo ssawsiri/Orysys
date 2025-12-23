@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Reflection;
 
@@ -11,6 +12,7 @@ namespace OrysysLoanApplication.DataAccess
 
         public static IConfiguration Configuration { get; set; }
 
+       
         private string GetConnectionString()
         {
             var builder = new ConfigurationBuilder()
@@ -30,7 +32,6 @@ namespace OrysysLoanApplication.DataAccess
                     _command.CommandType = CommandType.StoredProcedure;
                     _command.Parameters.AddWithValue("@Username", username);
                     _command.Parameters.AddWithValue("@Password", password);
-
                     _connection.Open();
                     var result = _command.ExecuteScalar();
                     isValidUser = (result != null && Convert.ToInt32(result) == 1);
@@ -39,6 +40,22 @@ namespace OrysysLoanApplication.DataAccess
             }
         
             return isValidUser;
+        }
+
+        public void LogLoginAttempt(string username, bool isSuccess)
+        {
+            using (_connection = new SqlConnection(GetConnectionString()))
+            {
+                using (_command = new SqlCommand("USP_InsertLoginAttempt", _connection))
+                {
+                    _command.CommandType = CommandType.StoredProcedure;
+                    _command.Parameters.AddWithValue("@Username", username);
+                    _command.Parameters.AddWithValue("@IsSuccess", isSuccess);
+                    _connection.Open();
+                    _command.ExecuteNonQuery();
+                    _connection.Close();
+                }
+            }
         }
     }
 }

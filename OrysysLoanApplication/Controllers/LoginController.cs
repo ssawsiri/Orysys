@@ -21,12 +21,14 @@ namespace OrysysLoanApplication.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel loginmodel)
         {
             bool isValidUser = _data.ValidateUser(loginmodel.Username, loginmodel.Password);
@@ -34,6 +36,7 @@ namespace OrysysLoanApplication.Controllers
             if (!isValidUser)
             {
                 loginmodel.ErrorMessage = "Invalid username or password";
+                _data.LogLoginAttempt(loginmodel.Username, false);
                 return View(loginmodel);
             }
 
@@ -46,9 +49,16 @@ namespace OrysysLoanApplication.Controllers
 
             try
             {
+                
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = false
+                };
+
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(identity));
+                    new ClaimsPrincipal(identity),
+                    authProperties);
             }
             catch (Exception ex)
             {
@@ -56,14 +66,26 @@ namespace OrysysLoanApplication.Controllers
                 throw;
             }
 
+            _data.LogLoginAttempt(loginmodel.Username, true);
+
             return RedirectToAction("Index", "Home");
         }
 
-       
+        [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
             return RedirectToAction("Login");
+        }
+
+        // Best-effort sign-out invoked by navigator.sendBeacon on unload
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult LogoutBeacon()
+        {
+            
+            HttpContext.SignOutAsync().GetAwaiter().GetResult();
+            return Ok();
         }
     }
 }

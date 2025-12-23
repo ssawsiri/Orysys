@@ -8,6 +8,16 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// Global fallback authorization: require authenticated user by default for all endpoints (Razor Pages and MVC)
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
+
+builder.Services.AddControllersWithViews();
+
 builder.Services.AddScoped<OrysysLoanApplication.DataAccess.DataAccessLoanApplication>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -22,9 +32,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(1);
-    
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
 
+// Register Razor Pages
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
@@ -76,6 +88,7 @@ app.MapControllerRoute(
     pattern: "{controller=Login}/{action=Login}/{id?}")
     .WithStaticAssets();
 
+// Map Razor Pages
 app.MapRazorPages();
 
 app.Run();
