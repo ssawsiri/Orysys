@@ -32,7 +32,6 @@ namespace OrysysLoanApplication.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Error in : " + ex.Message);
-                TempData["ErrorMessage"] = "An error occurred while fetching loan Application Details." + ex.Message;
             }  
             return View(loanApplications);
         }
@@ -54,7 +53,6 @@ namespace OrysysLoanApplication.Controllers
             {
 
                 _logger.LogError("Error in : " + ex.Message);
-                TempData["ErrorMessage"] = "An error occurred while fetching loan types." + ex.Message;
             }
 
             return View();

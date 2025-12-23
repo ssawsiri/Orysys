@@ -78,17 +78,50 @@
 
                     <tr class="border-spacing">
                         <td width="20%">
-                            <label asp-for="InterestRate">Interest Rate</label>
+                            <label asp-for="InterestRate">Loan Amount</label>
                         </td>
 
                         <td width="20%">
-                            <input asp-for="InterestRate" id="InterestRate" class="form-control" class="form-control"
+                            <input asp-for="LoanAmount" class="form-control" class="form-control"
                                    type="number"
                                    min="0"
                                    step="0.01"
                                    pattern="\d+(\.\d+)?"
                                    placeholder="e.g. 5.25" />
-                            <span asp-validation-for="InterestRate" class="text-danger"></span>
+                            <span asp-validation-for="LoanAmount" class="text-danger"></span>
+                        </td>
+                        <td width="5%">
+                        </td>
+                        <br />
+                    </tr>
+
+                    <tr class="border-spacing">
+                        <td width="20%">
+                            <label asp-for="Duration">Loan Duration (Month)</label>
+                        </td>
+
+                        <td width="20%">
+                            <input asp-for="Duration" class="form-control" class="form-control"
+                                   type="number"
+                                   min="0"
+                                   step="1"
+                                   />
+                            <span asp-validation-for="Duration" class="text-danger"></span>
+                        </td>
+                        <td width="5%">
+                        </td>
+                        <br />
+                    </tr>
+
+                    <tr class="border-spacing">
+                        <td width="20%">
+                            <label asp-for="Status">Status</label>
+                        </td>
+
+                        <td width="20%">
+                            <select class="form-select" id="status" asp-for="Status">
+                                <option>New</option>
+                            </select>
                         </td>
                         <td width="5%">
                         </td>

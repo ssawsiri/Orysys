@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
+using OrysysLoanApplication.Controllers;
 using OrysysLoanApplication.Models;
 using System.Data;
 using System.Reflection;
@@ -11,6 +12,11 @@ namespace OrysysLoanApplication.DataAccess
         SqlConnection _connection = null;
         SqlCommand _command = null;
 
+        private readonly ILogger<LoginController> _logger;
+        public DataAccessLoanApplication(ILogger<LoginController> logger)
+        {
+            _logger = logger;
+        }
         public static IConfiguration Configuration { get; set; }
 
        
@@ -28,15 +34,22 @@ namespace OrysysLoanApplication.DataAccess
             bool isValidUser = false;
             using (_connection = new SqlConnection(GetConnectionString()))
             {
-                using (_command = new SqlCommand("USP_ValidateUserLogin", _connection))
+                try
                 {
-                    _command.CommandType = CommandType.StoredProcedure;
-                    _command.Parameters.AddWithValue("@Username", username);
-                    _command.Parameters.AddWithValue("@Password", password);
-                    _connection.Open();
-                    var result = _command.ExecuteScalar();
-                    isValidUser = (result != null && Convert.ToInt32(result) == 1);
-                    _connection.Close();
+                    using (_command = new SqlCommand("USP_ValidateUserLogin", _connection))
+                    {
+                        _command.CommandType = CommandType.StoredProcedure;
+                        _command.Parameters.AddWithValue("@Username", username);
+                        _command.Parameters.AddWithValue("@Password", password);
+                        _connection.Open();
+                        var result = _command.ExecuteScalar();
+                        isValidUser = (result != null && Convert.ToInt32(result) == 1);
+                        _connection.Close();
+                    }
+                }
+                catch (Exception Ex)
+                {
+                    _logger.LogError("Error in : " + Ex.Message);
                 }
             }
         
@@ -47,14 +60,21 @@ namespace OrysysLoanApplication.DataAccess
         {
             using (_connection = new SqlConnection(GetConnectionString()))
             {
-                using (_command = new SqlCommand("USP_InsertLoginAttempt", _connection))
+                try
                 {
-                    _command.CommandType = CommandType.StoredProcedure;
-                    _command.Parameters.AddWithValue("@Username", username);
-                    _command.Parameters.AddWithValue("@IsSuccess", isSuccess);
-                    _connection.Open();
-                    _command.ExecuteNonQuery();
-                    _connection.Close();
+                    using (_command = new SqlCommand("USP_InsertLoginAttempt", _connection))
+                    {
+                        _command.CommandType = CommandType.StoredProcedure;
+                        _command.Parameters.AddWithValue("@Username", username);
+                        _command.Parameters.AddWithValue("@IsSuccess", isSuccess);
+                        _connection.Open();
+                        _command.ExecuteNonQuery();
+                        _connection.Close();
+                    }
+                }
+                catch (Exception Ex)
+                {
+                    _logger.LogError("Error in : " + Ex.Message);
                 }
             }
         }
@@ -68,18 +88,26 @@ namespace OrysysLoanApplication.DataAccess
                 {
                     _command.CommandType = CommandType.StoredProcedure;
                     _connection.Open();
-                    using (SqlDataReader reader = _command.ExecuteReader())
+                    try
                     {
-                        while (reader.Read())
+                        using (SqlDataReader reader = _command.ExecuteReader())
                         {
-                            LoanTypesModel loanType = new LoanTypesModel
+                            while (reader.Read())
                             {
-                                LoanTypeid = Convert.ToInt32(reader["TypeId"]),
-                                LoanTypeName = reader["TypeName"].ToString(),
-                                InterestRate = Convert.ToDouble(reader["InterestRate"])
-                            };
-                            loanTypes.Add(loanType);
+                                LoanTypesModel loanType = new LoanTypesModel
+                                {
+                                    LoanTypeid = Convert.ToInt32(reader["TypeId"]),
+                                    LoanTypeName = reader["TypeName"].ToString(),
+                                    InterestRate = Convert.ToDouble(reader["InterestRate"])
+                                };
+                                loanTypes.Add(loanType);
+                            }
                         }
+                    }
+                    catch (Exception Ex)
+                    {
+
+                        _logger.LogError("Error in : " + Ex.Message);
                     }
                     _connection.Close();
                 }
@@ -96,25 +124,32 @@ namespace OrysysLoanApplication.DataAccess
                 {
                     _command.CommandType = CommandType.StoredProcedure;
                     _connection.Open();
-                    using (SqlDataReader reader = _command.ExecuteReader())
+                    try
                     {
-                        while (reader.Read())
+                        using (SqlDataReader reader = _command.ExecuteReader())
                         {
-                            LoanApplicationModel loanapplication = new LoanApplicationModel
+                            while (reader.Read())
                             {
-                                LoanID = Convert.ToInt32(reader["LoanId"]),
-                                CustomerName = reader["CustomerName"].ToString(),
-                                NIC = reader["NIC"].ToString(),
-                                LoanTypeID = Convert.ToInt32(reader["LoanTypeId"]),
-                                LoanTypeName = reader["TypeName"].ToString(),
-                                InterestRate = Convert.ToDecimal(reader["InterestRate"]),
-                                LoanAmount = Convert.ToDecimal(reader["LoanAmount"]),
-                                RegisteredDate = Convert.ToDateTime(reader["RegisteredDate"]),
-                                Duration = Convert.ToInt32(reader["Duration"]),
-                                Status = reader["Status"].ToString(),
-                            };
-                            loanApplications.Add(loanapplication);
+                                LoanApplicationModel loanapplication = new LoanApplicationModel
+                                {
+                                    LoanID = Convert.ToInt32(reader["LoanId"]),
+                                    CustomerName = reader["CustomerName"].ToString(),
+                                    NIC = reader["NIC"].ToString(),
+                                    LoanTypeID = Convert.ToInt32(reader["LoanTypeId"]),
+                                    LoanTypeName = reader["TypeName"].ToString(),
+                                    InterestRate = Convert.ToDecimal(reader["InterestRate"]),
+                                    LoanAmount = Convert.ToDecimal(reader["LoanAmount"]),
+                                    RegisteredDate = Convert.ToDateTime(reader["RegisteredDate"]),
+                                    Duration = Convert.ToInt32(reader["Duration"]),
+                                    Status = reader["Status"].ToString(),
+                                };
+                                loanApplications.Add(loanapplication);
+                            }
                         }
+                    }
+                    catch (Exception Ex)
+                    {
+                        _logger.LogError("Error in : " + Ex.Message);
                     }
                     _connection.Close();
                 }

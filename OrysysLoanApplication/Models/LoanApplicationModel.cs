@@ -36,6 +36,7 @@ namespace OrysysLoanApplication.Models
 
         [Required]
         [DisplayName("Duration (Month)")]
+        [Range(0, int.MaxValue, ErrorMessage = "Please enter a valid whole number.")]
         public int Duration { get; set; }
 
         [Required]
