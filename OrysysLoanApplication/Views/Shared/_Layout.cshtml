@@ -45,6 +45,42 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        (function () {
+
+            const IDLE_TIMEOUT_MS = 600 * 1000;
+
+            let timer = null;
+
+            function startTimer() {
+                clearTimer();
+                timer = setTimeout(() => {
+
+                    window.location.href = "/Login/Login";
+                }, IDLE_TIMEOUT_MS);
+            }
+
+            function clearTimer() {
+                if (timer) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+            }
+
+
+            const events = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart', 'click'];
+            events.forEach(e => document.addEventListener(e, startTimer, { passive: true }));
+
+
+            startTimer();
+
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') startTimer();
+            });
+        })();
+    </script>
 </body>
 </html>

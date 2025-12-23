@@ -1,9 +1,11 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrysysLoanApplication.Models;
 
 namespace OrysysLoanApplication.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         public IActionResult Index()
