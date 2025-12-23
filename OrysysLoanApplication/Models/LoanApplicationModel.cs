@@ -20,6 +20,7 @@ namespace OrysysLoanApplication.Models
         public int LoanTypeID { get; set; }
 
         [Required]
+        [Range(0, double.MaxValue)]
         [DisplayName("Interest Rate")]
         public decimal InterestRate { get; set; }
 

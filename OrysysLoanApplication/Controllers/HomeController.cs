@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using OrysysLoanApplication.DataAccess;
 using OrysysLoanApplication.Models;
 using System.Diagnostics;
@@ -19,6 +20,8 @@ namespace OrysysLoanApplication.Controllers
             _logger = logger;
         }
 
+        [Authorize]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             List<LoanApplicationModel> loanApplications = new List<LoanApplicationModel>();
@@ -34,9 +37,16 @@ namespace OrysysLoanApplication.Controllers
             return View(loanApplications);
         }
 
-
+        [HttpGet]
+        [Authorize]
+        [AllowAnonymous]
         public IActionResult Create()
         {
+            List<LoanTypesModel> loanTypes = _data.GetLoanType();
+            ViewBag.LoanTypes = new SelectList(loanTypes, "LoanTypeName", "LoanTypeName") ;
+
+            ViewBag.LoanTypesJson = System.Text.Json.JsonSerializer.Serialize(loanTypes);
+
             return View();
         }
 

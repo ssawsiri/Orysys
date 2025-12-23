@@ -1,0 +1,48 @@
+@page
+@model dynamic
+@using System.Linq
+@using OrysysLoanApplication.Models
+@{
+    IEnumerable<LoanTypesModel> loanTypes = Enumerable.Empty<LoanTypesModel>();
+
+    // Try common locations without changing backend code
+    if (Model?.LoanTypes is IEnumerable<LoanTypesModel> m)
+    {
+        loanTypes = m;
+    }
+    else if (ViewData["LoanTypes"] is IEnumerable<LoanTypesModel> vd)
+    {
+        loanTypes = vd;
+    }
+    else
+    {
+        try
+        {
+            var vb = ViewBag?.LoanTypes as IEnumerable<LoanTypesModel>;
+            if (vb != null) loanTypes = vb;
+        }
+        catch { }
+    }
+}
+
+<h2>Create Loan Application</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label for="LoanTypeID" class="form-label">Loan Type</label>
+        <select id="LoanTypeID" name="LoanTypeID" class="form-select" required>
+            <option value="">-- Select Loan Type --</option>
+            @foreach (var lt in loanTypes)
+            {
+                <option value="@lt.LoanTypeid">@lt.LoanTypeName</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="CustomerName" class="form-label">Customer Name</label>
+        <input id="CustomerName" name="CustomerName" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
