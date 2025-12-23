@@ -1,8 +1,17 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<OrysysLoanApplication.DataAccess.DataAccessLoanApplication>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login/Login";
+        options.Cookie.Name = "OrysysLoanApp.Auth";
+    });
 
 var app = builder.Build();
 
@@ -17,6 +26,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapStaticAssets();

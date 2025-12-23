@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using OrysysLoanApplication.DataAccess;
 using OrysysLoanApplication.Models;
-using System.Data;
 using System.Security.Claims;
 
 namespace OrysysLoanApplication.Controllers
@@ -18,6 +16,7 @@ namespace OrysysLoanApplication.Controllers
             _data = data;
         }
 
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
@@ -26,9 +25,7 @@ namespace OrysysLoanApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginmodel)
         {
-            if (!ModelState.IsValid)
-                return View(loginmodel);
-
+           
             bool isValidUser = _data.ValidateUser(loginmodel.Username, loginmodel.Password);
 
             
@@ -38,11 +35,11 @@ namespace OrysysLoanApplication.Controllers
                 return View(loginmodel);
             }
 
-            // Create Authentication Cookie
+            
             var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, loginmodel.Username)
-        };
+                {
+                    new Claim(ClaimTypes.Name, loginmodel.Username)
+                };
 
             var identity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -50,6 +47,7 @@ namespace OrysysLoanApplication.Controllers
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(identity));
+            
 
             return RedirectToAction("Index", "Home");
         }
