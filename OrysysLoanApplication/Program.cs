@@ -2,6 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+bulider.Services.AddScoped<OrysysLoanApplication.DataAccess.DataAccessLoanApplication>();
 
 var app = builder.Build();
 
