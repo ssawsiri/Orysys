@@ -37,8 +37,13 @@
                         </td>
 
                         <td width="20%">
-                            <input asp-for="NIC" class="form-control" />
-                            <span asp-validation-for="NIC" class="text-danger"></span>
+                            <input asp-for="NIC" class="form-control" 
+                                   type="text"
+                                   id="IdentityNumber"
+                                   name="IdentityNumber"
+                                   maxlength="12"
+                                   oninput="validateSriLankaId(this)" />
+                            <span asp-validation-for="NIC" id="idError" class="text-danger"></span>
                         </td>
                     </tr>
 
@@ -139,7 +144,6 @@
 </form>
 
 <script>
-    // Loan types from server
     const loanTypes = @Html.Raw(ViewBag.LoanTypesJson);
 
     document.getElementById("LoanTypeDropdown")
@@ -162,7 +166,41 @@
                 interestInput.value = selectedLoan.InterestRate;
             }
         });
+
+    function validateSriLankaId(input) {
+
+        const value = input.value.toUpperCase().trim();
+
+        const oldNic = /^\d{9}[VX]$/;
+        const newNic = /^\d{12}$/;
+        const passport = /^[A-Z]{1,2}\d{7}$/;
+
+        const isValid =
+            oldNic.test(value) ||
+            newNic.test(value) ||
+            passport.test(value);
+
+        const error = document.getElementById("idError");
+
+        if (value === "") {
+            error.classList.add("d-none");
+            input.classList.remove("is-invalid");
+            return;
+        }
+
+        if (!isValid) {
+            error.classList.remove("d-none");
+            input.classList.add("is-invalid");
+        } else {
+            error.classList.add("d-none");
+            input.classList.remove("is-invalid");
+            input.value = value;
+        }
+    };
+       
 </script>
+
+
 
 @*client side validation*@
 @section Scripts {

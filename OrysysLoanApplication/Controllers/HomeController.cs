@@ -68,6 +68,7 @@ namespace OrysysLoanApplication.Controllers
             if (!ModelState.IsValid)
             {
                TempData["errorMessage"] = "Form Validation Failes";
+               return View();
             }
             objLoanApplication.LoanTypeID = loanTypes.Find(x => x.LoanTypeName == objLoanApplication.LoanTypeName).LoanTypeid;
             result = _data.AddLoanapplication(objLoanApplication);
