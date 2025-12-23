@@ -58,7 +58,30 @@ namespace OrysysLoanApplication.Controllers
             return View();
         }
 
-    
+        [HttpPost]
+        [Authorize]
+        [AllowAnonymous]
+        public IActionResult Create(LoanApplicationModel objLoanApplication)
+        {
+            List<LoanTypesModel> loanTypes = _data.GetLoanType();
+            bool result = false;
+            if (!ModelState.IsValid)
+            {
+               TempData["errorMessage"] = "Form Validation Failes";
+            }
+            objLoanApplication.LoanTypeID = loanTypes.Find(x => x.LoanTypeName == objLoanApplication.LoanTypeName).LoanTypeid;
+            result = _data.AddLoanapplication(objLoanApplication);
+            if (!result)
+            {
+                TempData["errorMessage"] = "Error in loan application creation";
+                return View();
+            }
+            TempData["success"] = "Loan Application has been Created Successfully";
+            return RedirectToAction("Index");
+
+        }
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

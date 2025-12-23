@@ -156,5 +156,33 @@ namespace OrysysLoanApplication.DataAccess
             }
             return loanApplications;
         }
+
+        public bool AddLoanapplication (LoanApplicationModel objApplication)
+        {
+            using (_connection = new SqlConnection(GetConnectionString()))
+            using (_command = new SqlCommand("USP_RegisterLoanApplication", _connection))
+            {
+                _command.CommandType = CommandType.StoredProcedure;
+                _command.Parameters.AddWithValue("@CustomerName", objApplication.CustomerName);
+                _command.Parameters.AddWithValue("@NIC", objApplication.NIC);
+                _command.Parameters.AddWithValue("@LoanTypeId", objApplication.LoanTypeID);
+                _command.Parameters.AddWithValue("@InterestRate", objApplication.InterestRate);
+                _command.Parameters.AddWithValue("@LoanAmount", objApplication.LoanAmount);
+                _command.Parameters.AddWithValue("@Duration", objApplication.Duration);
+                _command.Parameters.AddWithValue("@Status", objApplication.Status);
+                try
+                {
+                    _connection.Open();
+                    int rowsAffected = _command.ExecuteNonQuery();
+                    _connection.Close();
+                    return rowsAffected > 0;
+                }
+                catch (Exception Ex)
+                {
+                    _logger.LogError("Error in : " + Ex.Message);
+                    return false;
+                }
+            }
+        }
     }
 }
