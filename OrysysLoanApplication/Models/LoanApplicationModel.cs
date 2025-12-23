@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using OrysysLoanApplication.Views.Shared;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace OrysysLoanApplication.Models
@@ -11,6 +12,11 @@ namespace OrysysLoanApplication.Models
         [Required]
         [DisplayName("Customer Name")]
         public string CustomerName { get; set; }
+
+        [Required]
+        [DisplayName("NIC/Passport")]
+        [SLNICPassportValidation]
+        public string NIC { get; set; }
 
         [Required]
         [DisplayName("Loan Type")]

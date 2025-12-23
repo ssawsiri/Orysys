@@ -104,6 +104,7 @@ namespace OrysysLoanApplication.DataAccess
                             {
                                 LoanID = Convert.ToInt32(reader["LoanId"]),
                                 CustomerName = reader["CustomerName"].ToString(),
+                                NIC = reader["NIC"].ToString(),
                                 LoanTypeID = Convert.ToInt32(reader["LoanTypeId"]),
                                 LoanTypeName = reader["TypeName"].ToString(),
                                 InterestRate = Convert.ToDecimal(reader["InterestRate"]),

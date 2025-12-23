@@ -33,6 +33,17 @@
 
                     <tr class="border-spacing">
                         <td width="20%">
+                            <label asp-for="NIC">NIC / Passport</label>
+                        </td>
+
+                        <td width="20%">
+                            <input asp-for="NIC" class="form-control" />
+                            <span asp-validation-for="NIC" class="text-danger"></span>
+                        </td>
+                    </tr>
+
+                    <tr class="border-spacing">
+                        <td width="20%">
                             <label asp-for="LoanTypeName">Loan Type</label>
                         </td>
 
@@ -40,6 +51,25 @@
                             <select class="form-select" id="LoanTypeDropdown" asp-for="LoanTypeName" asp-items="ViewBag.LoanTypes">
                                 <option value="">--Select Loan Type--</option>
                             </select>
+                        </td>
+                        <td width="5%">
+                        </td>
+                        <br />
+                    </tr>
+
+                    <tr class="border-spacing">
+                        <td width="20%">
+                            <label asp-for="InterestRate">Interest Rate</label>
+                        </td>
+
+                        <td width="20%">
+                            <input asp-for="InterestRate" id="InterestRate" class="form-control" class="form-control"
+                                   type="number"
+                                   min="0"
+                                   step="0.01"
+                                   pattern="\d+(\.\d+)?"
+                                   placeholder="e.g. 5.25" />
+                            <span asp-validation-for="InterestRate" class="text-danger"></span>
                         </td>
                         <td width="5%">
                         </td>

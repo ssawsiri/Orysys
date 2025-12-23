@@ -32,7 +32,7 @@ namespace OrysysLoanApplication.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Error in : " + ex.Message);
-                TempData["ErrorMessage"] = "An error occurred while fetching loan types." + ex.Message;
+                TempData["ErrorMessage"] = "An error occurred while fetching loan Application Details." + ex.Message;
             }  
             return View(loanApplications);
         }
@@ -43,12 +43,24 @@ namespace OrysysLoanApplication.Controllers
         public IActionResult Create()
         {
             List<LoanTypesModel> loanTypes = _data.GetLoanType();
-            ViewBag.LoanTypes = new SelectList(loanTypes, "LoanTypeName", "LoanTypeName") ;
 
-            ViewBag.LoanTypesJson = System.Text.Json.JsonSerializer.Serialize(loanTypes);
+            try
+            {
+                ViewBag.LoanTypes = new SelectList(loanTypes, "LoanTypeName", "LoanTypeName");
+
+                ViewBag.LoanTypesJson = System.Text.Json.JsonSerializer.Serialize(loanTypes);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError("Error in : " + ex.Message);
+                TempData["ErrorMessage"] = "An error occurred while fetching loan types." + ex.Message;
+            }
 
             return View();
         }
+
+    
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
