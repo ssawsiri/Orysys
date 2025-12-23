@@ -1,0 +1,154 @@
+﻿@model LoanApplicationModel
+
+<style>
+    .readonly-field {
+        background-color: #e9ecef; /* Bootstrap disabled gray */
+        color: #6c757d;
+        cursor: not-allowed;
+    }
+</style>
+
+<form method="post">
+    <div class="pt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">
+                Update Loan Application Status
+            </h2>
+            <hr />
+
+        </div>
+        
+        <div class="mb-3">
+            <table class="table-borderless border-2" width="100%">
+                <thead>
+                </thead>
+                <tbody>
+
+                    <tr class="border-spacing">
+                        <td width="20%">
+                            <label asp-for="CustomerName">Customer Name</label>
+                        </td>
+
+                        <td width="20%">
+                            <input asp-for="CustomerName" class="form-control readonly-field" readonly />
+                           
+                        </td>
+                    </tr>
+
+                    <br />
+
+                    <tr class="border-spacing">
+                        <td width="20%">
+                            <label asp-for="NIC">NIC / Passport</label>
+                        </td>
+
+                        <td width="20%">
+                            <input asp-for="NIC" class="form-control readonly-field"
+                                   type="text"
+                                   id="IdentityNumber"
+                                   name="IdentityNumber"
+                                   maxlength="12"
+                                   oninput="validateSriLankaId(this)" readonly />
+                        </td>
+                    </tr>
+
+                    <tr class="border-spacing">
+                        <td width="20%">
+                            <label asp-for="LoanTypeName">Loan Type</label>
+                        </td>
+
+                        <td width="20%">
+                            <input asp-for="LoanTypeName" class="form-control readonly-field" readonly />
+                        </td>
+                        <td width="5%">
+                        </td>
+                        <br />
+                    </tr>
+
+                    <tr class="border-spacing">
+                        <td width="20%">
+                            <label asp-for="InterestRate">Interest Rate</label>
+                        </td>
+
+                        <td width="20%">
+                            <input asp-for="InterestRate" id="InterestRate" class="form-control readonly-field" class="form-control"
+                                   type="number"
+                                   min="0"
+                                   step="0.01"
+                                   pattern="\d+(\.\d+)?"
+                                   placeholder="e.g. 5.25" readonly/>
+                            
+                        </td>
+                        <td width="5%">
+                        </td>
+                        <br />
+                    </tr>
+
+                    <tr class="border-spacing">
+                        <td width="20%">
+                            <label asp-for="LoanAmount">Loan Amount</label>
+                        </td>
+
+                        <td width="20%">
+                            <input asp-for="LoanAmount" class="form-control readonly-field" class="form-control"
+                                   type="number"
+                                   min="0"
+                                   step="0.01"
+                                   pattern="\d+(\.\d+)?"
+                                   placeholder="e.g. 5.25" readonly />
+                        </td>
+                        <td width="5%">
+                        </td>
+                        <br />
+                    </tr>
+
+                    <tr class="border-spacing">
+                        <td width="20%">
+                            <label asp-for="Duration">Loan Duration (Month)</label>
+                        </td>
+
+                        <td width="20%">
+                            <input asp-for="Duration" class="form-control readonly-field" class="form-control"
+                                   type="number"
+                                   min="0"
+                                   step="1" readonly/>
+                           
+                        </td>
+                        <td width="5%">
+                        </td>
+                        <br />
+                    </tr>
+
+                    <tr class="border-spacing">
+                        <td width="20%">
+                            <label asp-for="Status">Status</label>
+                        </td>
+
+                        <td width="20%">
+                            <select class="form-select" id="status" asp-for="Status">
+                                <option>Rejected</option>
+                                <option>Approved</option>
+                            </select>
+                        </td>
+                        <td width="5%">
+                        </td>
+                        <br />
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <br />
+
+        <button type="submit" class="btn btn-primary" style="width:150px">Update</button>
+        <a asp-action="Index" asp-controller="Home" class="btn btn-secondary" style="width:250px">Back to Loan Application List</a>
+    </div>
+</form>
+
+@*client side validation*@
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+
+    }
+}

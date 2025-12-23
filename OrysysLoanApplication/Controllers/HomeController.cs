@@ -84,6 +84,44 @@ namespace OrysysLoanApplication.Controllers
 
 
 
+        [HttpGet]
+        [Authorize]
+        [AllowAnonymous]
+        public IActionResult UpdateStatus(int loanId)
+        {
+            try
+            {
+                LoanApplicationModel loanApplication = _data.GetLoanApplicationbyId(loanId);
+                if (loanApplication.LoanID == 0)
+                {
+                    TempData["errorMessage"] = "Loan Application not found with Loan ID : " + loanId;
+                    return RedirectToAction("Index");
+                }
+                return View(loanApplication);
+            }
+            catch ( Exception Ex)
+            {
+                _logger.LogError("Error in : " + Ex.Message);
+                return View();
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        [AllowAnonymous]
+        public IActionResult UpdateStatus(LoanApplicationModel loanApplication)
+        {
+            bool result = false;
+            result = _data.UpdateLoanapplication(loanApplication);
+            if (!result)
+            {   TempData["errorMessage"] = "Error in updating loan application status";
+                return View();
+            }
+            TempData["success"] = "Loan Application status has been updated Successfully";
+            return RedirectToAction("Index");
+        }
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

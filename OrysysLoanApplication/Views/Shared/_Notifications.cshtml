@@ -3,9 +3,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <p class="text-info">@TempData["success"]</p>
-    <script type="text/javascript">
-        toastr.success('@TempData["success"]');
-    </script>
+   
 }
 
 @if (TempData["error"] != null)
@@ -13,7 +11,5 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <p class="text-info">@TempData["errorMessage"]</p>
-    <script type="text/javascript">
-        toastr.error('@TempData["errorMessage"]');
-    </script>
+    
 }

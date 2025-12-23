@@ -157,6 +157,46 @@ namespace OrysysLoanApplication.DataAccess
             return loanApplications;
         }
 
+
+        public LoanApplicationModel GetLoanApplicationbyId(int loanID)
+        {
+            LoanApplicationModel loanApplication = new LoanApplicationModel();
+            using (_connection = new SqlConnection(GetConnectionString()))
+            {
+                using (_command = new SqlCommand("USP_GetLoanApplicationById", _connection))
+                {
+                    _command.CommandType = CommandType.StoredProcedure;
+                    _command.Parameters.AddWithValue("@LoanId", loanID);
+                    _connection.Open();
+                    try
+                    {
+                        using (SqlDataReader reader = _command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                loanApplication.LoanID = Convert.ToInt32(reader["LoanId"]);
+                                loanApplication.CustomerName = reader["CustomerName"].ToString();
+                                loanApplication.NIC = reader["NIC"].ToString();
+                                loanApplication.LoanTypeID = Convert.ToInt32(reader["LoanTypeId"]);
+                                loanApplication.LoanTypeName = reader["TypeName"].ToString();
+                                loanApplication.InterestRate = Convert.ToDecimal(reader["InterestRate"]);
+                                loanApplication.LoanAmount = Convert.ToDecimal(reader["LoanAmount"]);
+                                loanApplication.RegisteredDate = Convert.ToDateTime(reader["RegisteredDate"]);
+                                loanApplication.Duration = Convert.ToInt32(reader["Duration"]);
+                                loanApplication.Status = reader["Status"].ToString();
+                            }
+                        }
+                    }
+                    catch (Exception Ex)
+                    {
+                        _logger.LogError("Error in : " + Ex.Message);
+                    }
+                    _connection.Close();
+                }
+            }
+            return loanApplication;
+        }
+
         public bool AddLoanapplication (LoanApplicationModel objApplication)
         {
             using (_connection = new SqlConnection(GetConnectionString()))
@@ -170,6 +210,30 @@ namespace OrysysLoanApplication.DataAccess
                 _command.Parameters.AddWithValue("@LoanAmount", objApplication.LoanAmount);
                 _command.Parameters.AddWithValue("@Duration", objApplication.Duration);
                 _command.Parameters.AddWithValue("@Status", objApplication.Status);
+                try
+                {
+                    _connection.Open();
+                    int rowsAffected = _command.ExecuteNonQuery();
+                    _connection.Close();
+                    return rowsAffected > 0;
+                }
+                catch (Exception Ex)
+                {
+                    _logger.LogError("Error in : " + Ex.Message);
+                    return false;
+                }
+            }
+        }
+
+        public bool UpdateLoanapplication(LoanApplicationModel objApplication)
+        {
+            using (_connection = new SqlConnection(GetConnectionString()))
+            using (_command = new SqlCommand("USP_UpdateLoanApplication", _connection))
+            {
+                _command.CommandType = CommandType.StoredProcedure;
+                _command.Parameters.AddWithValue("@LoanId", objApplication.LoanID);
+                _command.Parameters.AddWithValue("@Status", objApplication.Status);
+                
                 try
                 {
                     _connection.Open();
