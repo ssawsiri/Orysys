@@ -12,11 +12,7 @@ namespace OrysysLoanApplication.DataAccess
         SqlConnection _connection = null;
         SqlCommand _command = null;
 
-        private readonly ILogger<LoginController> _logger;
-        public DataAccessLoanApplication(ILogger<LoginController> logger)
-        {
-            _logger = logger;
-        }
+
         public static IConfiguration Configuration { get; set; }
 
        
@@ -49,7 +45,7 @@ namespace OrysysLoanApplication.DataAccess
                 }
                 catch (Exception Ex)
                 {
-                    _logger.LogError("Error in : " + Ex.Message);
+                    LogEvents.LogToFile("DataAccessLoanApplication - ValidateUser", Ex.Message);
                 }
             }
         
@@ -74,7 +70,7 @@ namespace OrysysLoanApplication.DataAccess
                 }
                 catch (Exception Ex)
                 {
-                    _logger.LogError("Error in : " + Ex.Message);
+                    LogEvents.LogToFile("DataAccessLoanApplication - LogLoginAttempt", Ex.Message);
                 }
             }
         }
@@ -106,8 +102,7 @@ namespace OrysysLoanApplication.DataAccess
                     }
                     catch (Exception Ex)
                     {
-
-                        _logger.LogError("Error in : " + Ex.Message);
+                        LogEvents.LogToFile("DataAccessLoanApplication - GetLoanType", Ex.Message);
                     }
                     _connection.Close();
                 }
@@ -149,7 +144,7 @@ namespace OrysysLoanApplication.DataAccess
                     }
                     catch (Exception Ex)
                     {
-                        _logger.LogError("Error in : " + Ex.Message);
+                        LogEvents.LogToFile("DataAccessLoanApplication - GetAllLoanApplication", Ex.Message);
                     }
                     _connection.Close();
                 }
@@ -189,7 +184,7 @@ namespace OrysysLoanApplication.DataAccess
                     }
                     catch (Exception Ex)
                     {
-                        _logger.LogError("Error in : " + Ex.Message);
+                        LogEvents.LogToFile("DataAccessLoanApplication - GetLoanApplicationbyId", Ex.Message);
                     }
                     _connection.Close();
                 }
@@ -219,7 +214,7 @@ namespace OrysysLoanApplication.DataAccess
                 }
                 catch (Exception Ex)
                 {
-                    _logger.LogError("Error in : " + Ex.Message);
+                    LogEvents.LogToFile("DataAccessLoanApplication - AddLoanapplication", Ex.Message);
                     return false;
                 }
             }
@@ -243,7 +238,7 @@ namespace OrysysLoanApplication.DataAccess
                 }
                 catch (Exception Ex)
                 {
-                    _logger.LogError("Error in : " + Ex.Message);
+                    LogEvents.LogToFile("DataAccessLoanApplication - UpdateLoanapplication", Ex.Message);
                     return false;
                 }
             }

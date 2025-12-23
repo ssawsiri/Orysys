@@ -12,12 +12,11 @@ namespace OrysysLoanApplication.Controllers
     {
 
         private readonly DataAccessLoanApplication _data;
-        private readonly ILogger<LoginController> _logger;
+        
 
-        public HomeController(DataAccessLoanApplication data, ILogger<LoginController> logger)
+        public HomeController(DataAccessLoanApplication data)
         {
             _data = data;
-            _logger = logger;
         }
 
         [Authorize]
@@ -31,7 +30,7 @@ namespace OrysysLoanApplication.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error in : " + ex.Message);
+                LogEvents.LogToFile("Error in Home Index", ex.Message);
             }  
             return View(loanApplications);
         }
@@ -52,7 +51,7 @@ namespace OrysysLoanApplication.Controllers
             catch (Exception ex)
             {
 
-                _logger.LogError("Error in : " + ex.Message);
+                LogEvents.LogToFile("Error in Home Create", ex.Message);
             }
 
             return View();
@@ -101,7 +100,7 @@ namespace OrysysLoanApplication.Controllers
             }
             catch ( Exception Ex)
             {
-                _logger.LogError("Error in : " + Ex.Message);
+                LogEvents.LogToFile("Error in Home UpdateStatus", Ex.Message);
                 return View();
             }
         }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using OrysysLoanApplication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,8 +78,7 @@ try
 }
 catch (Exception ex)
 {
-    var logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("StartupDiagnostics");
-    logger.LogError(ex, "Failed to enumerate authentication schemes.");
+     LogEvents.LogToFile("Authentication Scheme Error", ex.Message);
 }
 
 app.MapStaticAssets();

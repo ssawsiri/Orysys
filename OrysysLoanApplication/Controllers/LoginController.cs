@@ -12,12 +12,10 @@ namespace OrysysLoanApplication.Controllers
     public class LoginController : Controller
     {
         private readonly DataAccessLoanApplication _data;
-        private readonly ILogger<LoginController> _logger;
 
-        public LoginController(DataAccessLoanApplication data, ILogger<LoginController> logger)
+        public LoginController(DataAccessLoanApplication data)
         {
             _data = data;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -62,8 +60,7 @@ namespace OrysysLoanApplication.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "SignInAsync failed for user {User}. Scheme: {Scheme}", loginmodel.Username, CookieAuthenticationDefaults.AuthenticationScheme);
-                throw;
+                LogEvents.LogToFile("Login Error", $"SignInAsync failed for user {loginmodel.Username}. Exception: {ex}");
             }
 
             _data.LogLoginAttempt(loginmodel.Username, true);
